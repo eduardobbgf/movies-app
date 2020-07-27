@@ -16,7 +16,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class MovieCard extends Vue {
   @Prop() private item!: object;
-  public getPoster(posterPath:string): string {
+  private getPoster(posterPath: string): string {
     const posterPathInit = 'https://image.tmdb.org/t/p/w500';
     return posterPathInit + posterPath;
   }
