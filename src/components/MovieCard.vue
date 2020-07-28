@@ -22,6 +22,7 @@
           <div 
             id="movie-paper"
             >
+            <a :href='"/detail-page/" + item.id'>
             <div
               id="movie-poster"  
               :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')', height: (item.title.length>40) ? '305px':'328px'}" 
@@ -38,6 +39,7 @@
                 Comedy, Action, Drama
                 </div>
             </div>
+            </a>
           </div>
         </li>
         <div>
@@ -124,19 +126,16 @@ export default class MovieCard extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
 ul {
   list-style-type: none;
   padding: 0;
 }
+a {
+  text-decoration: none;
+}
 li {
   display: inline-block;
   margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 .button-switch-page {
   display: flex;
@@ -145,6 +144,7 @@ a {
   margin-top: 25px;
 }
 #movie-paper {
+  padding: 0;
   width: 300px;
   height: 420px;
   margin: 15px 0;
@@ -158,4 +158,5 @@ a {
 .movie-title {
   margin: 10px 0;
 }
+
 </style>

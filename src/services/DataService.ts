@@ -8,7 +8,7 @@ class DataService {
   }
 
   public get(id: string) {
-    return http.get(`/tutorials/${id}`);
+    return http.get(`/movie/${id}?api_key=f516e13764c3e546142f74d9acf29011`);
   }
 
 //   create(data: any) {
