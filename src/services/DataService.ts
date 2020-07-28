@@ -3,8 +3,8 @@ import http from '../http-common';
 // const api_key = 'f516e13764c3e546142f74d9acf29011';
 
 class DataService {
-  public getAll(pageNumber: number) {
-    return http.get(`/discover/movie?api_key=f516e13764c3e546142f74d9acf29011&page=${pageNumber}`);
+  public getAll(pageNumber: number, sorting: string) {
+    return http.get(`/discover/movie?api_key=f516e13764c3e546142f74d9acf29011&language=en-US&sort_by=${sorting}&certification_country=us&include_adult=false&page=${pageNumber}&with_original_language=en`);
   }
 
   public get(id: string) {
