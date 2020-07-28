@@ -1,33 +1,70 @@
 <template>
       <div class="main">
-        <li>
-          <div 
-            id="movie-paper"
-            >
-            <a :href='"/detail-page/" + data.id'>
+        <section class="movie-box">
             <div
-              id="movie-poster"  
-              :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')', height: (data.title.length>40) ? '305px':'328px'}" 
-              v-bind="data"
-              ></div>
-              <div class="movie-title">
+                id="movie-poster"  
+                :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
+                v-bind="data"
+                ></div>
+            <div class="movie-title">
+                <p>
+                    <span id="movie-list">Title</span>
+                    <span>: {{ data.title }}</span>
+                </p>
+                <p>
+                    <span id="movie-list">Release Date</span>
+                    <span>: {{ data.release_date }}</span>
+                </p>
                 <div>
-                {{ data.title }}
+                    <span id="movie-list">Genres:</span>
+                    <span v-for="(genre, index) in data.genres">
+                        <span> {{ genre.name }}</span><span v-if="index+1 <data.genres.length">,</span>
+                    </span>
                 </div>
-                <div>
-                {{ data.release_date.slice(0,4) }}
-                </div>
-                <div>
-                Comedy, Action, Drama
-                </div>
+                <p>
+                    <span id="movie-list">Votes</span>
+                    <span>: {{ data.vote_average }}</span>
+                </p>
+                <p>
+                    <span id="movie-list">Votes</span> 
+                <span>: {{ data.vote_count }}</span>
+                </p>
+                <p>
+                    <span id="movie-list">Overview</span> 
+                    <span>: {{ data.overview }}</span>
+                </p>
+                <p>
+                    <span>{{ data.runtime }} min</span>
+                </p>
+                <p>
+                    <span id="movie-list">Status</span> 
+                    <span>: {{ data.status }}</span>
+                </p>
+                <p>
+                    <a :href="data.homepage">Movie's Homepage</a>
+                </p>
             </div>
-            </a>
-          </div>
-        </li>
-        <div>
-          <button :disabled='isDisabled' @click="decrementPage()">Previous page</button>
-          <button @click="incrementPage()">Next page</button>
+        </section>
+        <div class="movie-recom">
+            Recommendation based on this movie
         </div>
+        <section class="movie-box">
+            <div
+                id="movie-poster-options"  
+                :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
+                v-bind="data"
+                ></div>
+            <div
+                id="movie-poster-options"  
+                :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
+                v-bind="data"
+                ></div>
+            <div
+                id="movie-poster-options"  
+                :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
+                v-bind="data"
+                ></div>
+        </section>
       </div>
 </template>
 
@@ -75,9 +112,6 @@ ul {
   list-style-type: none;
   padding: 0;
 }
-a {
-  text-decoration: none;
-}
 li {
   display: inline-block;
   margin: 0 10px;
@@ -89,6 +123,7 @@ li {
   margin-top: 25px;
 }
 #movie-paper {
+  display: flex;
   padding: 0;
   width: 300px;
   height: 420px;
@@ -97,11 +132,32 @@ li {
   border: 1px solid grey;
 }
 #movie-poster {
+  width: 300px;
+  height: 420px;
   background-size: cover;
-  margin: 0;
+  margin: 0  15px;
 }
 .movie-title {
+  width: 65%;
   margin: 10px 0;
+  text-align: left;
 }
-
+.movie-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:center;
+  margin: 3%;
+}
+#movie-poster-options {
+  width: 225px;
+  height: 315px;
+  background-size: cover;
+  margin: 15px;
+}
+#movie-list {
+    font-weight: bold;
+}
+.movie-recom {
+  font-size: 24px;
+}
 </style>
