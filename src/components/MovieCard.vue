@@ -98,7 +98,7 @@ export default class MovieCard extends Vue {
   }
 
   private retrieveMovies() {
-    DataService.getAll(this.pageNumber, this.sort)
+    DataService.getAll(this.pageNumber, this.sort, '')
       .then((response) => {
         this.data = JSON.parse(JSON.stringify(response.data));
 

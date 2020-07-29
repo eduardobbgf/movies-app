@@ -35,7 +35,7 @@ import
   font-size: 17px;
 }
 .main {
-  padding: 16px;
+  padding: 16px 0;
   margin-top: 30px;
 }
 .navbar a:hover {
