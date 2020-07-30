@@ -25,7 +25,7 @@
             <a :href='"/detail-page/" + item.id'>
             <div
               id="movie-poster"  
-              :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')', height: (item.title.length>40) ? '305px':'328px'}" 
+              :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')', height: (item.title.length > 45) ? '305px':'328px'}" 
               v-bind="item"
               ></div>
               <div class="movie-title">
@@ -156,7 +156,7 @@ li {
   margin: 0;
 }
 .movie-title {
-  margin: 10px 0;
+  margin: 10px 8px;
 }
 
 </style>

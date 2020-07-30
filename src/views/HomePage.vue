@@ -38,8 +38,14 @@ a {
 div {
 line-break: auto;
 }
+.main {
+  padding: 16px 0;
+  margin-top: 30px;
+}
 @media screen and (max-width: 600px) {
-  .navbar.responsive {position: relative;}
+  .navbar.responsive {
+    position: relative;
+    }
   .navbar.responsive .icon {
     position: absolute;
     right: 0;

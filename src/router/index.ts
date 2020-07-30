@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 import HomePage from '../views/HomePage.vue';
 import DetailPage from '../views/DetailPage.vue';
+import RandomPage from '../views/RandomPage.vue';
 
 Vue.use(VueRouter);
 
@@ -13,8 +14,13 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/detail-page/:movie_id',
-    name: 'detail-page',
+    name: 'Detail Page',
     component: DetailPage,
+  },
+  {
+    path: '/random-page',
+    name: 'Random Page',
+    component: RandomPage,
   },
 
 ];

@@ -17,7 +17,7 @@
                 </p>
                 <div>
                     <span id="movie-list">Genres:</span>
-                    <span v-for="(genre, index) in data.genres">
+                    <span v-for="(genre, index) in data.genres" :key="genre.name">
                         <span> {{ genre.name }}</span><span v-if="index+1 <data.genres.length">,</span>
                     </span>
                 </div>
@@ -256,5 +256,9 @@ li {
 .movie-recom-title {
   margin-top: 15px;
   font-size: 24px;
+}
+.main {
+  padding: 16px 0;
+  margin-top: 30px;
 }
 </style>
