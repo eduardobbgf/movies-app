@@ -1,11 +1,7 @@
 <template>
-  <div id="app">
-    <div class="navbar">
-      <a href="/">Home</a>
-      <a href="/categories">Categories</a>
-      <a href="/random-page">Random Page</a>
-    </div>
-    <div class="teste">
+<div>
+    <div id="app">
+      <Navbar/>
       <router-view/>
     </div>
     <div class="footer">
@@ -16,12 +12,14 @@
 
 <script lang="ts">
 import Footer from './components/Footer.vue';
+import Navbar from './components/Navbar.vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import router from './router';
 
 @Component({
   components: {
     Footer,
+    Navbar,
   },
 })
 export default class App extends Vue {
@@ -34,35 +32,19 @@ export default class App extends Vue {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 35px 0;
   flex: 1;
 }
-.navbar {
-  overflow: hidden;
-  background-color: #333;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-.navbar a {
-  min-height: 5vh;
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-.navbar a:hover {
-  background: #ddd;
-  color: black;
-}
 .footer {
-  min-height: 11.5vh;
   background-color: #333333;
-  margin-top: 50px;
-}
-.teste {
-  min-height: 80vh;
-}
+  clear: both;
+  position: relative;
+  width: 100%;
+  height: 150px;
+  margin-top: -150px;
+} 
+.main {
+  }
 </style>

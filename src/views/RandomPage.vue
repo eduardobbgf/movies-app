@@ -1,28 +1,33 @@
 <template>
       <div class="main">
+<div class="container">
+        <div class="page-title">Random Movie
+        </div>
           <div 
             id="movie-paper"
             >
             <a :href='"/detail-page/" + data.results[moviePos].id'>
-            <div
-              id="movie-poster"  
-              :style="{ backgroundImage: 'url(' + getPoster(data.results[moviePos].poster_path) + ')', height: (data.results[moviePos].title.length > 45) ? '305px':'328px'}" 
-              v-bind="data.results[moviePos]"
-              ></div>
-              <div class="movie-title">
-                <div>
-                {{ data.results[moviePos].title }}
-                </div>
-                <div>
-                {{ data.results[moviePos].release_date.slice(0,4) }}
-                </div>
-                <div>
-                Comedy, Action, Drama
-                </div>
-            </div>
+              <div
+                id="movie-poster"  
+                :style="{ backgroundImage: 'url(' + getPoster(data.results[moviePos].poster_path) + ')', height: (data.results[moviePos].title.length > 45) ? '305px':'328px'}" 
+                v-bind="data.results[moviePos]"
+                ></div>
+                <div class="movie-title">
+                  <div>
+                  {{ data.results[moviePos].title }}
+                  </div>
+                  <div>
+                  {{ data.results[moviePos].release_date.slice(0,4) }}
+                  </div>
+              </div>
             </a>
+            <button 
+              class="random-button w3-button w3-white w3-border"
+              @click="getNewRandom"
+              >Generate New Random</button>
           </div>
       </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -43,6 +48,10 @@ export default class RandomPage extends Vue {
   private getRandomMoviePos() {
       this.moviePos = Math.floor(Math.random() * this.data.results.length) + 1;
   }
+  private getNewRandom() {
+    this.getRandomPage();
+    this.retrieveMovies();
+  }
   private retrieveMovies() {
     DataService.getAll(this.pageNumber, this.sort, '')
       .then((response) => {
@@ -51,7 +60,7 @@ export default class RandomPage extends Vue {
         console.log(this.data);
       })
       .catch((e) => {
-        console.log("error",e);
+        console.log('error', e);
       });
   }
   private mounted() {
@@ -74,27 +83,39 @@ export default class RandomPage extends Vue {
 <style scoped>
 .main {
   padding: 16px 0;
-  margin-top: 30px;
+  /* margin-top: 30px; */
   display: flex;
+  justify-content: center;
 }
 a {
   text-decoration: none;
 }
 #movie-paper {
-  justify-content: center;
   padding: 0;
   width: 300px;
   height: 420px;
-  margin: 15px 0;
+  margin: 35px 0;
+  border-radius: 10px;
   background-color: white;
-  border: 1px solid grey;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)
 }
 #movie-poster {
+  border-radius: 10px 10px 0 0;
   background-size: cover;
   margin: 0;
 }
 .movie-title {
   margin: 10px 8px;
 }
-
+.random-button {
+  margin-top: 55px;
+}
+.page-title {
+  font-size: 36px;
+}
+.container {
+  padding: 50px;
+  max-width: 1600px;
+}
 </style>

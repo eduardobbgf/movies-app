@@ -1,18 +1,38 @@
 <template>
-      <div>
+      <div class="container"> 
         <div class="button-switch-page">
-          <select size="1" name="pet" v-model="sort" @change='selectSort'>
+          <div>
+          <select size="1" class="select-box" v-model="sort" @change='selectSort'>
             <option value='popularity.desc' selected>Most Popular</option>
             <option value='popularity.asc' selected>Least Popular</option>
             <option value='original_title.asc' selected>Title Ascending</option>
             <option value='original_title.desc' selected>Title Descending</option>
           </select>
-          <div>
-            <button 
-                    :disabled='isDisabled'
-                    @click="decrementPage()"
-                    >Previous page</button>
-            <button @click="incrementPage()">Next page</button>
+          <select size="1" class="select-box" v-model="genreWith"  @change='selectGenre'>
+            <option 
+              value='' 
+              selected
+              >All</option>
+            <option 
+              :value='genre.id' 
+              v-for="genre in allGenres" 
+              :key="genre.id" 
+              >{{genre.name}}</option>
+          </select>
+          </div>
+          <div class="button-page-top">
+              <div class="w3-bar w3-border w3-round">
+                <button 
+                  class="w3-button"
+                  :disabled='isDisabled'
+                  @click="decrementPage()"
+                  >&#10094; Previous</button>
+                <button 
+                  href="#" 
+                  class="w3-button w3-right"
+                  @click="incrementPage()"
+                  >Next &#10095;</button>
+              </div>
           </div>
         </div>
         <li 
@@ -25,7 +45,7 @@
             <a :href='"/detail-page/" + item.id'>
             <div
               id="movie-poster"  
-              :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')', height: (item.title.length > 45) ? '305px':'328px'}" 
+              :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')', height: giveHeights(item.title.length)}" 
               v-bind="item"
               ></div>
               <div class="movie-title">
@@ -35,16 +55,23 @@
                 <div>
                 {{ item.release_date.slice(0,4) }}
                 </div>
-                <div>
-                Comedy, Action, Drama
-                </div>
             </div>
             </a>
           </div>
         </li>
-        <div>
-          <button :disabled='isDisabled' @click="decrementPage()">Previous page</button>
-          <button @click="incrementPage()">Next page</button>
+        <div class="w3-center">
+          <div class="w3-bar w3-border w3-round">
+              <button 
+                class="w3-button"
+                :disabled='isDisabled'
+                @click="decrementPage()"
+                >&#10094; Previous</button>
+              <button 
+                href="#" 
+                class="w3-button w3-right"
+                @click="incrementPage()"
+                >Next &#10095;</button>
+          </div>
         </div>
       </div>
 </template>
@@ -53,6 +80,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import DataService from './../services/DataService';
+import VueRouter, { Route } from 'vue-router';
 
 @Component
 export default class MovieCard extends Vue {
@@ -62,7 +90,35 @@ export default class MovieCard extends Vue {
   private isDisabled: boolean = true;
   private part: number = 0;
   private sort: string = 'popularity.desc';
+  private allGenres: any;
+  private genreWith: string = '';
 
+  private selectGenre() {
+    this.part = 0;
+    this.pageNumber = 1;
+    this.retrieveMovies();
+  }
+  private retrieveGenres() {
+    DataService.getGenres()
+      .then((response) => {
+        this.allGenres = JSON.parse(JSON.stringify(response.data)).genres;
+
+        console.log(this.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  private giveHeights(numChar: any) {
+    if (numChar < 42) {
+      return '328px';
+    } else if (numChar < 80) {
+      return '305px';
+    } else {
+      return '295px';
+    }
+  }
   private pages() {
     this.isDisabled = (this.pageNumber === 1 && this.part === 0) ? true : false;
   }
@@ -78,9 +134,7 @@ export default class MovieCard extends Vue {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   }
-  private selectSort() {
-    this.retrieveMovies();
-  }
+
   private decrementPage() {
     if (this.part === 0) {
       if (this.pageNumber > 1) {
@@ -98,7 +152,7 @@ export default class MovieCard extends Vue {
   }
 
   private retrieveMovies() {
-    DataService.getAll(this.pageNumber, this.sort, '')
+    DataService.getAll(this.pageNumber, this.sort, this.genreWith)
       .then((response) => {
         this.data = JSON.parse(JSON.stringify(response.data));
 
@@ -109,7 +163,15 @@ export default class MovieCard extends Vue {
         console.log(e);
       });
   }
+  private getGenre() {
+    const genreQuery = (this.$router as any).history.current.query.genre_id;
+    if (genreQuery) {
+      this.genreWith = genreQuery;
+    }
+  }
   private mounted() {
+    this.getGenre();
+    this.retrieveGenres();
     this.retrieveMovies();
   }
 
@@ -139,24 +201,51 @@ li {
 }
 .button-switch-page {
   display: flex;
+  flex-wrap: wrap;
   justify-content:space-between;
-  margin: 0 32px;
-  margin-top: 25px;
+  margin: 35px 10px 10px;
 }
 #movie-paper {
   padding: 0;
   width: 300px;
   height: 420px;
   margin: 15px 0;
+  border-radius: 10px;
   background-color: white;
-  border: 1px solid grey;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)
 }
 #movie-poster {
+  border-radius: 10px 10px 0 0;
   background-size: cover;
   margin: 0;
 }
 .movie-title {
   margin: 10px 8px;
 }
-
+.container {
+  max-width: 1600px;
+}
+.select-box {
+  padding: 8px;
+  margin-right: 15px;
+  margin-top: 5px;
+}
+@media screen and (max-width: 600px) {
+.button-switch-page {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:center;
+  margin: 35px 10px 10px;
+}
+.select-box {
+  width: 80%;
+  padding: 8px;
+  margin: 10px 0;
+}
+.button-page-top {
+  width: 232px;
+  margin-top: 15px;
+}
+}
 </style>

@@ -1,9 +1,14 @@
 <template>
+  <footer class="footer">
       <section class="footer-info">
-        <div class="footer-itens">
+        <div class="footer-itens-sitemap">
+          <span class="sitemap">
+            Sitemap
+          </span>
           <div 
             v-for="route in routes" 
             :key="route.name"
+            class="sitemap-routes"
             >
             <a 
             :href="route.path"
@@ -12,18 +17,21 @@
           </div>
         </div>
         <div class="footer-itens">
+          <div>
           Developed By:
             <a  href="https://github.com/EduardoBBGusmao">
               <div class="github"></div>
             </a>
-        </div>   
-        <div class="footer-itens">
+          </div>
+          <div>
           Powered By:
             <a  href="https://www.themoviedb.org">
               <div class="tmdb"></div>
-            </a>     
+            </a>    
+          </div> 
         </div>
       </section>
+  </footer>
 </template>
 
 <script lang="ts">
@@ -42,18 +50,42 @@ export default class Footer extends Vue {
 <style scoped>
 
 a {
+  font-size: 10px;
   text-decoration: none;
   color: white;
 }
+
+a:hover{
+  text-decoration: underline;
+  color: black;
+}
+
+.footer {
+  background-color: #333333;
+  flex-wrap: wrap;
+  min-height: 50px;
+  margin-top: -50px;
+} 
 .footer-info {
+  background-color: #333333;
+
   display: flex;
   flex-wrap: wrap;
-  justify-content:center;
+  justify-content:space-around;
 }
 .footer-itens {
-  margin: 15px 20px;
+  margin: 25px;
   color: white;
+  font-size: 10px;
+  width: 300px;
+  display: flex;
+  justify-content:space-evenly;
+  flex-wrap: wrap;
 
+}
+.footer-itens-sitemap {
+  margin: 25px;
+  color: white;
 }
 .github {
   background-image: url('./../assets/GitHub-Mark-Light-120px-plus.png');
@@ -70,5 +102,7 @@ a {
   height: 50px;
   width: 50px;
 }
-
+.sitemap {
+  font-size: 12px;
+}
 </style>

@@ -2,7 +2,7 @@
       <div class="main">
         <section class="movie-box">
             <div
-                id="movie-poster"  
+                class="movie-poster"  
                 :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
                 v-bind="data"
                 ></div>
@@ -52,7 +52,7 @@
             <section class="movie-box-recom" >
                 <template v-for='item in recom' >
                 <a
-                    id="movie-poster-options"  
+                    class="movie-poster-options"  
                     :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')'}" 
                     :href='"/detail-page/" + item.id'
                     :key="item.id"
@@ -77,7 +77,7 @@ export default class DetailPage extends Vue {
   private movie_id: string = (this.$router as any).history.current.params.movie_id;
   private sort: string = 'popularity.desc';
 
-  private compare( a: any, b: any ) {
+  private compare(a: any, b: any ) {
     if ( a.last_nom < b.last_nom ) {
         return -1;
     }
@@ -211,16 +211,9 @@ li {
   margin: 0 32px;
   margin-top: 25px;
 }
-#movie-paper {
-  display: flex;
-  padding: 0;
-  width: 300px;
-  height: 420px;
-  margin: 15px 0;
-  background-color: white;
-  border: 1px solid grey;
-}
-#movie-poster {
+.movie-poster { 
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
   width: 300px;
   height: 420px;
   background-size: cover;
@@ -241,10 +234,13 @@ li {
   display: flex;
   flex-wrap: wrap;
   justify-content:center;
+  margin-bottom: 21px;
   width: 100%;
   background-color: #e8e8e8;
 }
-#movie-poster-options {
+.movie-poster-options {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
   width: 225px;
   height: 315px;
   background-size: cover;
@@ -258,7 +254,7 @@ li {
   font-size: 24px;
 }
 .main {
-  padding: 16px 0;
-  margin-top: 30px;
+  margin-top: 40px;
+  margin-bottom: 150px;
 }
 </style>

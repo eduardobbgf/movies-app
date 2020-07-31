@@ -14,9 +14,13 @@ class DataService {
   public get(id: string) {
     return http.get(`/movie/${id}?api_key=f516e13764c3e546142f74d9acf29011`);
   }
-
+  // https://api.themoviedb.org/3/genre/movie/list?api_key=f516e13764c3e546142f74d9acf29011&language=en-US
   public getCollection(id: string) {
     return http.get(`/collection/${id}?api_key=f516e13764c3e546142f74d9acf29011`);
+  }
+
+  public getGenres() {
+    return http.get(`/genre/movie/list?api_key=f516e13764c3e546142f74d9acf29011&language=en-US`);
   }
 //   create(data: any) {
 //     return http.post('/tutorials', data);

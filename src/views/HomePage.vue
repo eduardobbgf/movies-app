@@ -39,22 +39,8 @@ div {
 line-break: auto;
 }
 .main {
-  padding: 16px 0;
-  margin-top: 30px;
-}
-@media screen and (max-width: 600px) {
-  .navbar.responsive {
-    position: relative;
-    }
-  .navbar.responsive .icon {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-  .navbar.responsive a {
-    float: none;
-    display: block;
-    text-align: left;
-  }
+  display: flex;
+  justify-content: center;
+  margin-bottom: 150px;
 }
 </style>
