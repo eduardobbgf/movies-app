@@ -44,10 +44,14 @@ export default class App extends Vue {
   height: 100px;
   margin-top: -100px;
 } 
-@media screen and (max-width: 600px) {
-  
+@media screen and (max-height: 800px)  and (min-height: 600px) {
 .footer {
-  margin-top: 80px;
+  margin-top: 100px;
+} 
+} 
+@media screen and (max-height: 600px) {
+.footer {
+  margin-top: 200px;
 } 
 }
 </style>
