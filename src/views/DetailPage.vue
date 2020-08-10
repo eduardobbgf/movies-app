@@ -3,61 +3,61 @@
         <section class="movie-box">
             <div
                 class="movie-poster"  
-                :style="{ backgroundImage: 'url(' + getPoster(data.poster_path) + ')'}" 
-                v-bind="data"
+                :style="{ backgroundImage: mixinsFuncs.getPoster(movieDetails.poster_path) }" 
+                v-bind="movieDetails"
                 ></div>
             <div class="movie-title">
                 <p>
-                    <span id="movie-list">Title</span>
-                    <span>: {{ data.title }}</span>
+                  <span id="movie-list">Title</span>
+                  <span>: {{ movieDetails.title }}</span>
                 </p>
                 <p>
-                    <span id="movie-list">Release Date</span>
-                    <span>: {{ data.release_date }}</span>
+                  <span id="movie-list">Release Date</span>
+                  <span>: {{ movieDetails.release_date }}</span>
                 </p>
                 <div>
-                    <span id="movie-list">Genres:</span>
-                    <span v-for="(genre, index) in data.genres" :key="genre.name">
-                        <span> {{ genre.name }}</span><span v-if="index+1 <data.genres.length">,</span>
-                    </span>
+                  <span id="movie-list">Genres:</span>
+                  <span v-for="(genre, index) in movieDetails.genres" :key="genre.name">
+                    <span> {{ genre.name }}</span>
+                    <span v-if="index+1 <movieDetails.genres.length">,</span>
+                  </span>
                 </div>
                 <p>
-                    <span id="movie-list">Votes</span>
-                    <span>: {{ data.vote_average }}</span>
+                  <span id="movie-list">Rating</span>
+                  <span>: {{ movieDetails.vote_average }}</span>
                 </p>
                 <p>
-                    <span id="movie-list">Votes</span> 
-                <span>: {{ data.vote_count }}</span>
+                  <span id="movie-list">Votes</span> 
+                  <span>: {{ movieDetails.vote_count }}</span>
                 </p>
                 <p>
-                    <span id="movie-list">Overview</span> 
-                    <span>: {{ data.overview }}</span>
+                  <span id="movie-list">Overview</span> 
+                  <span>: {{ movieDetails.overview }}</span>
                 </p>
                 <p>
-                    <span>{{ data.runtime }} min</span>
+                  <span>{{ movieDetails.runtime }} min</span>
                 </p>
                 <p>
-                    <span id="movie-list">Status</span> 
-                    <span>: {{ data.status }}</span>
+                  <span id="movie-list">Status</span> 
+                  <span>: {{ movieDetails.status }}</span>
                 </p>
                 <p>
-                    <a :href="data.homepage">Movie's Homepage</a>
+                  <a :href="movieDetails.homepage">Movie's Homepage</a>
                 </p>
             </div>
         </section>
         <div class="movie-box-recom">
             <div class="movie-recom-title">
-                Recommendation based on this movie
+              Recommendation based on this movie
             </div>
             <section class="movie-box-recom" >
-                <template v-for='item in recom' >
                 <a
+                    v-for='item in moviesRecommended'
                     class="movie-poster-options"  
-                    :style="{ backgroundImage: 'url(' + getPoster(item.poster_path) + ')'}" 
+                    :style="{ backgroundImage: mixinsFuncs.getPoster(item.poster_path)}" 
                     :href='"/detail-page/" + item.id'
                     :key="item.id"
                     ></a>
-                </template>
             </section>
         </div>
       </div>
@@ -65,137 +65,97 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from 'axios';
-import DataService from './../services/DataService';
 import VueRouter, { Route } from 'vue-router';
+import functions from './../mixins/sharedFunctions.vue';
 
 @Component
 export default class DetailPage extends Vue {
-  private data: any = {};
+  private movieDetails: any = {};
   private collection: any = {};
-  private recom: any = [];
-  private movie_id: string = (this.$router as any).history.current.params.movie_id;
+  private moviesRecommended: any = [];
+  private moviesSelected: any = {};
+  private movieId: string = (this.$router as any).history.current.params.movie_id;
   private sort: string = 'popularity.desc';
+  private mixinsFuncs = functions.methods;
 
-  private compare(a: any, b: any ) {
-    if ( a.last_nom < b.last_nom ) {
-        return -1;
-    }
-    if ( a.last_nom > b.last_nom ) {
-        return 1;
-    }
-    return 0;
-    }
-
-  private collectionRecommended() {
-        const index = this.collection.parts.map((e: any) => e.id).indexOf(this.data.id);
-        this.collection.parts.splice(index, 1);
-        const parts = this.collection.parts;
-        if (parts.length > 2) {
-            if (index === parts.length) {
-                this.recom = parts.slice(0, 3);
-
-            } else if (index === parts.length - 1) {
-                this.recom.push(parts[parts.length - 1]);
-                this.recom.push(parts[0]);
-                this.recom.push(parts[1]);
-
-            } else if (index === parts.length - 2) {
-                this.recom.push(parts[parts.length - 2]);
-                this.recom.push(parts[parts.length - 1]);
-                this.recom.push(parts[0]);
-
-            } else {
-                this.recom = parts.slice(index, 3 + index);
-            }
-        } else if (parts.length <= 2) {
-            this.recom = parts;
-            this.recommendMovies(3 - parts.length);
-        }
+  private async setMovieDetail() {
+    await this.$store.dispatch('retrieveMovieDetail', this.movieId);
+    this.movieDetails = await this.$store.getters.getMovieDetail;
+    this.retrieveCollections();
   }
 
-  private recommendMovies(moviesNum: number) {
-    console.log('newMovies', moviesNum);
-    const genresId = this.data.genres.map((genre: any ) => genre.id).toString();
-    DataService.getAll(1, 'popularity.desc', genresId)
-        .then((response) => {
-            const recommended = JSON.parse(JSON.stringify(response.data)).results;
-            if (!recommended) {
-                return;
-            }
-            const index = recommended.map((e: any) => e.id).indexOf(this.data.id);
-            let indexRecommended = 0;
-            let x = moviesNum;
-            if (index > -1) {
-                recommended.splice(index, 1);
-                }
-            console.log(recommended[0]);
-            if (this.collection) {
-                while (x !== 0) {
-                    const recommendedMovie = recommended[indexRecommended];
-
-                    if (this.collection.parts.map((e: any) => e.id).indexOf(recommendedMovie.id) === -1) {
-                        this.recom.push(recommendedMovie);
-                        x--;
-                    }
-                    indexRecommended++;
-                }
-            } else {
-                for (let i = 0; i < moviesNum; i++) {
-                    this.recom.push(recommended[i]);
-                }
-            }
-         })
-        .catch((e) => {
-            console.log(e);
-        });
-  }
-  private retrieveCollections() {
-    if (this.data.belongs_to_collection) {
-    DataService.getCollection(this.data.belongs_to_collection.id)
-        .then((response) => {
-            this.collection = JSON.parse(JSON.stringify(response.data));
-            this.collectionRecommended();
-         })
-        .catch((e) => {
-            console.log(e);
-        });
+  // If this movie has a collection, recommend movies from the collection
+  private async retrieveCollections() {
+    if (this.movieDetails.belongs_to_collection) {
+      await this.setCollections();
+      this.collectionRecommended();
     }  else {
-        this.recommendMovies(3);
+      this.recommendMovies();
     }
   }
-  private retrieveMovies() {
-    DataService.get(this.movie_id)
-      .then((response) => {
-        this.data = JSON.parse(JSON.stringify(response.data));
-        if (this.data.belongs_to_collection != null) {
-            this.retrieveCollections();
-        } else {
-            this.collection = null;
-            this.recommendMovies(3);
-        }
-        console.log(this.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
-  private mounted() {
-    this.retrieveMovies();
+
+  private async setCollections() {
+    await this.$store.dispatch('retrieveCollections',
+                               this.movieDetails.belongs_to_collection.id);
+    this.collection = await this.$store.getters.getCollection;
   }
 
-  private getPoster(posterPath: string): string {
-    const posterPathInit = 'https://image.tmdb.org/t/p/w500';
-
-    if (!posterPath) {
-      return 'https://cdn4.iconfinder.com/data/icons/defaulticon/icons/png/256x256/no.png';
+  private async recommendMovies() {
+    await this.selectMovies();
+    this.removeItem(this.moviesSelected, this.movieDetails);
+    const numberRecommended = this.moviesRecommended.length;
+    for (let i = 0; i < 3 - numberRecommended; i++) {
+      this.moviesRecommended.push(this.moviesSelected[i]);
     }
-    return posterPathInit + posterPath;
   }
+
+  // Function will organize the order movie collections in case there are more
+  // than 2 movies in this collection
+  private collectionRecommended() {
+    const index = this.collection.parts.map((e: any) => e.id)
+                  .indexOf(this.movieDetails.id);
+    this.collection.parts.splice(index, 1);
+    const parts = this.collection.parts;
+    if (parts.length > 2) {
+      for (let i = 0; i < index; i++) {
+          parts.push(parts.shift());
+      }
+      this.moviesRecommended = parts.slice(0, 3);
+    } else {
+      this.moviesRecommended = parts;
+      this.recommendMovies();
+    }
   }
+
+  // This function will get the top 20 most popular movies with the same genre
+  private async selectMovies() {
+    const genresId = this.getMovieGenres();
+    const filters = {
+      page: 1,
+      sort: 'popularity.desc',
+      withGenre: genresId,
+    };
+    await this.$store.dispatch('retrieveMovies', filters);
+    this.moviesSelected = this.$store.getters.getMovies;
+  }
+
+  private removeItem(array: object[], item: any) {
+    const index = array.map((e: any) => e.id).indexOf(item.id);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
+  }
+
+  private getMovieGenres() {
+    return this.movieDetails.genres.map((genre: any ) => genre.id).toString();
+  }
+
+  private async mounted() {
+    await this.setMovieDetail();
+  }
+}
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {
   list-style-type: none;
@@ -213,6 +173,7 @@ li {
 }
 .movie-poster { 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  background-position: center 0 ;
   border-radius: 10px;
   width: 300px;
   height: 420px;

@@ -1,96 +1,90 @@
 <template>
       <div class="main">
-<div class="container">
-        <div class="page-title">Random Movie
+        <div class="container">
+          <div class="page-title">Random Movie</div>
+            <div class="movie-paper">
+              <MovieCard :item="randomMovie"/>
+            </div>
+            <div class="padding-20">
+              <button 
+                class="random-button w3-button w3-white w3-border"
+                @click="getNewRandom"
+                >Generate New Random</button>
+            </div>
         </div>
-          <div 
-            id="movie-paper"
-            >
-            <a :href='"/detail-page/" + data.results[moviePos].id'>
-              <div
-                id="movie-poster"  
-                :style="{ backgroundImage: 'url(' + getPoster(data.results[moviePos].poster_path) + ')', height: (data.results[moviePos].title.length > 45) ? '305px':'328px'}" 
-                v-bind="data.results[moviePos]"
-                ></div>
-                <div class="movie-title">
-                  <div>
-                  {{ data.results[moviePos].title }}
-                  </div>
-                  <div>
-                  {{ data.results[moviePos].release_date.slice(0,4) }}
-                  </div>
-              </div>
-            </a>
-            <button 
-              class="random-button w3-button w3-white w3-border"
-              @click="getNewRandom"
-              >Generate New Random</button>
-          </div>
       </div>
-</div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from 'axios';
-import DataService from './../services/DataService';
+import functions from './../mixins/sharedFunctions.vue';
+import MovieCard from './../components/MovieCard.vue';
 
-@Component
+@Component({components: {MovieCard}})
 export default class RandomPage extends Vue {
-  @Prop() private msg!: string;
-  private data: any = {};
+  private data: object[] = [];
+  private randomMovie: any = {title: ''};
   private pageNumber: number = 1;
   private moviePos: number = 0;
   private sort: string = 'popularity.desc';
+  private mixinsFuncs = functions.methods;
+
   private getRandomPage() {
-      this.pageNumber = Math.floor(Math.random() * 500) + 1;
+    this.pageNumber = Math.floor(Math.random() * 500) + 1;
   }
+
   private getRandomMoviePos() {
-      this.moviePos = Math.floor(Math.random() * this.data.results.length) + 1;
+    this.moviePos = Math.floor(Math.random() * this.data.length) + 1;
   }
   private getNewRandom() {
     this.getRandomPage();
-    this.retrieveMovies();
+    this.setMovies();
   }
-  private retrieveMovies() {
-    DataService.getAll(this.pageNumber, this.sort, '')
-      .then((response) => {
-        this.data = JSON.parse(JSON.stringify(response.data));
-        this.getRandomMoviePos();
-        console.log(this.data);
-      })
-      .catch((e) => {
-        console.log('error', e);
-      });
+
+  private async setMovies() {
+    const filters = {
+      pageNumber: this.pageNumber,
+      sort: this.sort,
+      withGenre: '',
+      };
+    await this.$store.dispatch('retrieveMovies', filters);
+    this.data = this.$store.getters.getMovies;
+    this.randomMovie = this.data[(this.moviePos as any)];
   }
+
   private mounted() {
     this.getRandomPage();
-    this.retrieveMovies();
+    this.setMovies();
   }
 
   private getPoster(posterPath: string): string {
     const posterPathInit = 'https://image.tmdb.org/t/p/w500';
-
     if (!posterPath) {
       return 'https://cdn4.iconfinder.com/data/icons/defaulticon/icons/png/256x256/no.png';
     }
     return posterPathInit + posterPath;
   }
-  }
+}
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .main {
-  padding: 16px 0;
-  /* margin-top: 30px; */
+  padding: 20px 0 200px;
+  height: 100vh;
+  margin-top: -108px;
+  padding-top: 120px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
 }
 a {
   text-decoration: none;
 }
-#movie-paper {
+.padding-20 {
+  margin-top: -20px;
+}
+.movie-paper {
   padding: 0;
   width: 300px;
   height: 420px;
@@ -100,22 +94,18 @@ a {
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15)
 }
-#movie-poster {
-  border-radius: 10px 10px 0 0;
-  background-size: cover;
-  margin: 0;
-}
 .movie-title {
   margin: 10px 8px;
 }
 .random-button {
-  margin-top: 55px;
+  margin: 20px 0;
 }
 .page-title {
+  margin-top: 15px;
   font-size: 36px;
 }
 .container {
-  padding: 50px;
+  height: auto;
   max-width: 1600px;
 }
 </style>

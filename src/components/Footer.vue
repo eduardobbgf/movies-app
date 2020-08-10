@@ -46,7 +46,6 @@ export default class Footer extends Vue {
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 a {
@@ -62,18 +61,17 @@ a:hover{
 
 .footer {
   background-color: #333333;
-  flex-wrap: wrap;
   min-height: 50px;
   margin-top: -50px;
 } 
 .footer-info {
   background-color: #333333;
-
+  
   display: flex;
-  flex-wrap: wrap;
-  justify-content:space-around;
+  justify-content:space-evenly;
 }
 .footer-itens {
+  justify-content: center;
   margin: 25px;
   color: white;
   font-size: 10px;
@@ -105,4 +103,18 @@ a:hover{
 .sitemap {
   font-size: 12px;
 }
+@media screen and (max-width: 600px)  {
+  .github {
+    height: 30px;
+    width: 30px;
+  }
+  .tmdb {
+    height: 30px;
+    width: 30px;
+  }
+.footer-itens-sitemap {
+  margin: 15px 25px;
+  color: white;
+}
+}  
 </style>

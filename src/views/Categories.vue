@@ -1,20 +1,18 @@
 <template>
     <div class="main">
       <div class="container"> 
-        <div class="page-title">Movies categories
-        </div>
+        <div class="page-title">Movies categories</div>
         <li 
-          v-for="item in data.genres" 
+          v-for="item in allGenres" 
           v-bind:key="item.id"
           >
           <div class="genre-paper"> 
-            <a :href='"/?genre_id=" + item.id' 
-            >
+            <a :href='"/?genre_id=" + item.id'>
               <div class="genre-name">
                 <div>
-                {{ item.name }}
+                  {{ item.name }}
                 </div>
-            </div>
+              </div>
             </a>
           </div>
         </li>
@@ -24,38 +22,22 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import axios from 'axios';
-import DataService from './../services/DataService';
 
 @Component
-export default class MovieCard extends Vue {
-  @Prop()
-  private data = {};
+export default class Categories extends Vue {
+  private allGenres = [];
 
-  private retrieveGenres() {
-    DataService.getGenres()
-      .then((response) => {
-        this.data = JSON.parse(JSON.stringify(response.data));
-
-        console.log(this.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  private async retrieveGenres() {
+    await this.$store.dispatch('retrieveGenres');
+    this.allGenres = await this.$store.getters.getGenres;
   }
   private mounted() {
-      this.retrieveGenres();
+    this.retrieveGenres();
   }
-
-  }
+}
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-ul {
-  list-style-type: none;
-  padding: 0;
-}
 a {
   text-decoration: none;
 }
@@ -75,10 +57,8 @@ li {
 .genre-paper:hover {
     background-color: rgba(151, 150, 150, 0.15);
 }
-.genre-name {
-}
 .container {
-  padding: 50px;
+  padding: 30px;
   max-width: 1600px;
 }
 .main {

@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <div id="app">
       <Navbar/>
       <router-view/>
@@ -33,7 +33,6 @@ export default class App extends Vue {
   text-align: center;
   color: #2c3e50;
   justify-content: center;
-  min-height: 100vh;
   padding: 35px 0;
   flex: 1;
 }
@@ -42,9 +41,13 @@ export default class App extends Vue {
   clear: both;
   position: relative;
   width: 100%;
-  height: 150px;
-  margin-top: -150px;
+  height: 100px;
+  margin-top: -100px;
 } 
-.main {
-  }
+@media screen and (max-width: 600px) {
+  
+.footer {
+  margin-top: 80px;
+} 
+}
 </style>

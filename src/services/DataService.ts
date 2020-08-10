@@ -14,7 +14,7 @@ class DataService {
   public get(id: string) {
     return http.get(`/movie/${id}?api_key=f516e13764c3e546142f74d9acf29011`);
   }
-  // https://api.themoviedb.org/3/genre/movie/list?api_key=f516e13764c3e546142f74d9acf29011&language=en-US
+
   public getCollection(id: string) {
     return http.get(`/collection/${id}?api_key=f516e13764c3e546142f74d9acf29011`);
   }
@@ -22,25 +22,6 @@ class DataService {
   public getGenres() {
     return http.get(`/genre/movie/list?api_key=f516e13764c3e546142f74d9acf29011&language=en-US`);
   }
-//   create(data: any) {
-//     return http.post('/tutorials', data);
-//   }
-
-//   update(id: string, data: any) {
-//     return http.put(`/tutorials/${id}`, data);
-//   }
-
-//   delete(id: string) {
-//     return http.delete(`/tutorials/${id}`);
-//   }
-
-//   deleteAll() {
-//     return http.delete(`/tutorials`);
-//   }
-
-//   findByTitle(title: string) {
-//     return http.get(`/tutorials?title=${title}`);
-//   }
 }
 
 export default new DataService();
